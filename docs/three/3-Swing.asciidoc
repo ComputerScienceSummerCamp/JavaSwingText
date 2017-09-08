@@ -1,0 +1,200 @@
+:sectnums:
+:chapter-label:
+:source-highlighter: coderay
+
+= 第３章 Swing
+
+この章では、Swingというパッケージを使って、簡単なものを作っていきます。
+
+== Swingとは
+
+Javaで作成するプログラムをアプリケーションといいます。この中で、GUIアプリケーションを作るのに使われるパッケージ（ライブラリ）が、Swingです。
+ちなみに、GUIとは、Graphical User Interfaceの略で、画面が出てくるアプリケーションのことです。
+
+== Swing の基本スタイル
+
+今回は、このテンプレートを使って、ゲームを作っていきたいと思います。まず、以下のコードを実行してみましょう。
+
+[source, java]
+----
+include::code/MyJPanel.java[lines=2..-1]
+----
+
+実行結果：
+
+image::img/resultOfSwingSample1.png[scaledwidth="50%"]
+
+何もないウィンドウが表示されたと思います。Javaコースではこのウィンドウを使って、いろいろなアプリケーションを作っていくことになります。
+mainメソッドの中に、`height` と `width` という変数があると思いますが、これの変数は画面の縦横の大きさが格納されています。
+画面を大きさを変更したいときは、heightとwidthの値を変えてやれば、画面が大きくなったり小さくなったりします。
+
+
+何もないと味気ないので、文字を表示するアプリケーションを作ってみましょう。「Hello World!」と表示するために、さっきのコードを少し変えましょう。
+変えるのは、MyJPanelクラスの中の、while文の中にひとこと追加するだけです。
+
+```java
+while(true){
+    g.drawString("Hello, world!" ,100,100); //追加！
+    wg.drawImage(img, 0, 0, null);
+}
+```
+
+最初に作ったウィンドウに、Hello, Worldという文字が表示されると思います。
+
+=== drawString(string, x, y)
+ここで、drawStringの定義を見てみましょう。
+
+第１引数　:　表示する文字列
+
+第２引数　:　表示するｘ座標
+
+第３引数　:　表示するｙ座標
+
+注意点として、ここでいうxとｙは、左から数えてxピクセル、上から数えてｙピクセルという意味です。Swingは基準点が左上なので、気をつけてください。
+
+=== 余力のある人は、フォントも設定してみよう
+
+`drawString`メソッドは、フォントを設定することもできます。
+`setFont`メソッドを使って以下のようにすると、フォントを設定できます。
+
+[source, java]
+----
+include::code/MyJPanelString.java[lines=12..17]
+----
+
+
+== 図形、画像の表示
+
+今度は、Graphicsクラスを使って図形を描いてみましょう。Graphicsクラスを使うと、線を引いたり四角形を描いたりできます。
+他にも背景の色を変更したり、見た目をいろいろと変更することができます。
+
+まず、以下のコードを実行してみましょう。while文の中を変えるだけですね。
+
+[source, java]
+----
+include::code/MyJPanel2.java[lines=5..-1]
+----
+
+実行結果：
+
+image::img/resultOfSwingSample3.png[scaledwidth="50%"]
+
+それぞれのメソッドについて解説します。
+
+===  四角形を描く
+四角形を描くには、`drawRect`もしくは`fillRect`メソッドを使います。
+
+```java
+drawRect(x, y, width, height)
+fillRect(x, y, width, height)
+```
+
+`drawRect(x, y, width, height)`と指定すると、座標(x,y)を四角形の左上の頂点として、高さがheight、幅がwidthの長方形が描かれます。
+`drawRect`は四角形の外枠だけが描かれて、`fillRect`は中が塗りつぶされた四角形を描くことができます。
+
+=== 円を描く
+円を描くには、`drawOval`もしくは`fillOval`メソッドを使います。
+
+```java
+drawOval(x, y, width, height)
+fillOval(x, y, width, height)
+```
+
+`drawOval`メソッドは、座標（x,y）を左上とした、高さ`height`、幅`width`の四角形の中にすっぽり入る円を描くことができます。
+`fillOval`で、中が塗りつぶされた円を描くこともできます。
+
+image::img/drawOval.png[scaledwidth="50%"]
+
+===  角度を指定して、円（孤）を描く
+角度を指定して円を描くには、`drawArc`もしくは`fillArc`メソッドを使います。
+
+```java
+drawArc(x1, y1, x2, y2, arc1, arc2)
+fillArc(x1, y1, x2, y2, arc1, arc2)
+```
+
+`drawArc`メソッドは、座標(x1,y1）と（x2,y2）を対角線（右下がり）とする四角形の中にすっぽり入るような円が描けます。
+`arc1`と`arc2`で角度を指定すれば、arc1からarc2までの角度の扇型を描くことができます。例えば、0,360とすれば、一回転なので、ふつうの円が描けます。
+30,300とすれば、パックマンが出来上がります（笑）。
+
+=== 色を指定する
+描く図形の色を指定したい場合は、`setColor`を使います。
+
+```java
+setColor(Color.BLUE)
+```
+
+図形を描く前に、`setColor`を使えば、図形に色をつけられます。
+例えば、
+
+```java
+g.setColor(Color.BLUE);
+g.fillOval(0, 0, 100, 100);
+```
+
+とすれば、青色の円が描けると思います。
+
+他にも様々な色が指定できます。
+
+|===
+|コード |色
+
+| Color.BLACK | [black]#黒#
+| Color.BLUE | [blue]#青#
+| Color.GRAY | pass:[<span style="color:#C0C0C0">灰色</span>]
+| Color.GREEN | [green]#緑#
+| Color.ORANGE | pass:[<span style="color:#FFA500">オレンジ</span>]
+| Color.PINK | pass:[<span style="color:#FFC0CB">ピンク</span>]
+| Color.RED | [red]#赤#
+| Color.WHITE | [white]#白#
+| Color.YELLOW | [yellow]#黄色#
+|===
+
+また、数字で厳密にカラーコードを指定することも可能です。
+
+```java
+g.setColor(new Color(127,255,212));
+```
+
+=== 画像を表示する
+次に、画像を表示してみましょう。
+今回は、こちらでは特に画像を用意していないので、自分で好きな画像をネットからダウンロードしましょう。
+
+==== 画像を保存する手順
+
+===== 1. firefoxを起動
+image:img/firefox.png[firefox]
+
+===== 2. 画像を適当に検索して、画像を保存。
+
+===== 3. eclipse で、img というフォルダを作る。
+
+srcを右クリックして、`New → Folder`を選択します。
+画像を入れるフォルダなので、フォルダ名は`img`としておきましょう。
+
+===== 4. 保存した画像を、eclipseのimgフォルダへドラッグ＆ドロップ
+
+
+==== 画像を表示してみよう
+
+画像の保存が無事終わったところで、今度は画像を表示するコードをかいてみましょう。
+
+[source, java]
+----
+include::code/MyJPanelImage.java[lines=13..31]
+----
+
+画像を読み込むには、`ImageIO.read`メソッドを使い、画像を表示するには、`drawImage`メソッドを使います。サンプルでは、aizu.pngを読み込んでいます。
+`new File`は、ファイルを開く命令です。それらを囲んでいる`try`と`catch`は、例外処理といって、エラーを処理するときに使いますが、今はあまり気にしなくて大丈夫です。
+
+画像を読み込んだら、あとは`drawImage`メソッドで描くだけです。
+
+```java
+drawImage(image, x, y, this);
+```
+
+第１引数`image`には、先ほどファイルを読み込んで格納した変数をいれます。ここでは、変数`image`がそれにあたります。
+
+第２、３引数のx,yは、画像の位置ですね。左上が基準点になっているので注意です。
+
+第４引数は、`this`（もしくは`null`）を入れれば大丈夫です。
